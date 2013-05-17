@@ -48,6 +48,7 @@ var server = net.createServer(function (conn) {
 
   conn.on('close', function () {
     count--;
+    delete users[nickname];
   });
 });
 
