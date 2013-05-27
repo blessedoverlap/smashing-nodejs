@@ -1,3 +1,4 @@
+var qs = require('querystring');
 require('http').createServer(function (req, res) {
   if (req.url == '/') {
     res.writeHead(200, { 'Content-Type': 'text/html' });
@@ -12,6 +13,16 @@ require('http').createServer(function (req, res) {
       '</form>'
     ].join(''));
   } else if (req.url == '/url' && req.method == 'POST') {
-    res.end('You sent a <em>' + req.method + '</em> request');
+    var body = '';
+    req.on('data', function (chunck) {
+      body += chunck;
+    });
+    req.on('end', function () {
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end('<p>You name is: <b>' + qs.parse(body).name + '</b></p>');
+    });
+  } else {
+    res.writeHead(404);
+    res.end('Not found')
   }
 }).listen(3000);
